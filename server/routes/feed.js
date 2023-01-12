@@ -2,32 +2,55 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
+let feeds = [];
+
 // Create
 router.post("/", async (req, res) => {
-  res.json({
-    msg: "Data created",
-  });
+  const newTweet = {
+    name: "Clinton Johnson",
+    handler: "@dev_clinton",
+    title: req.body.tweet,
+    profileImg: "",
+    tweetImg: "",
+  };
+  feeds.push(newTweet);
+  res.json(feeds);
 });
 
 // Update
-router.put("/", async (req, res) => {
+router.put("/:id", async (req, res) => {
+  const {
+    params: { id },
+    body: { tweet },
+  } = req;
+
+  feeds[id] = {
+    name: "Clinton Johnson",
+    handler: "@dev_clinton",
+    title: tweet,
+    profileImg: "",
+    tweetImg: "",
+  };
+
   res.json({
-    msg: "Data updated",
+    msg: "Tweet Updated",
+    data: feeds,
   });
 });
 
 // Read
 router.get("/", async (req, res) => {
-  const feeds = await axios.get(
+  const tweeterData = await axios.get(
     "https://mpb-site.s3.us-east-2.amazonaws.com/tweeter.json"
   );
-  res.json(feeds.data);
+  feeds = tweeterData.data;
+  res.json(tweeterData.data);
 });
 
 // Delete
-router.delete("/", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   res.json({
-    msg: "Data deleted",
+    msg: "Tweet has been deleted",
   });
 });
 
